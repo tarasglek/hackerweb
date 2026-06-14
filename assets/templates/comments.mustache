@@ -1,5 +1,5 @@
 {{#comments}}
-	<li>
+	<li id="comment-{{id}}" data-comment-id="{{id}}">
 		<p class="metadata {{#deleted}}deleted{{/deleted}}">
 			{{#deleted}}<span>[deleted]</span>{{/deleted}}
 			{{^deleted}}<a href="https://news.ycombinator.com/user?id={{user}}" target="_blank"><b class="user">{{user}}</b></a>{{/deleted}}

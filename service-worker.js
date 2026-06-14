@@ -6,7 +6,7 @@ self.addEventListener('activate', function(event){
 	console.log('Activate');
 });
 
-var cacheName = 'hackerweb-v1';
+var cacheName = 'hackerweb-v2';
 var successResponses = /^0|([123]\d\d)|(40[14567])|410$/;
 
 function fetchAndCache(request){

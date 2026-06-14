@@ -250,12 +250,35 @@
 		$commentsHeading = $commentsView.querySelector('header h1'),
 		$commentsSection = $commentsView.querySelector('section');
 
+	var scrollToComment = function(commentID){
+		if (!commentID) return;
+		var comment = $('comment-' + commentID);
+		if (!comment) return;
+
+		var parent = comment.parentNode;
+		while (parent && parent != $commentsSection){
+			if (parent.tagName == 'UL' && parent.style.display == 'none'){
+				parent.style.display = '';
+			}
+			parent = parent.parentNode;
+		}
+
+		comment.scrollIntoView({block: 'start'});
+		comment.style.backgroundColor = 'rgba(255, 230, 0, .28)';
+		setTimeout(function(){
+			comment.style.backgroundColor = '';
+		}, 4000);
+	};
+
 	hw.comments = {
 		currentID: null,
-		render: function(id){
+		render: function(id, commentID){
 			if (!id) return;
 			var post = amplify.store.sessionStorage('hacker-item-' + id);
-			if (hw.comments.currentID == id && post) return;
+			if (hw.comments.currentID == id && post){
+				scrollToComment(commentID);
+				return;
+			}
 			hw.comments.currentID = id;
 
 			var loadPost = function(_data, id){
@@ -357,6 +380,7 @@
 				delete div;
 
 				hw.pub('onRenderComments');
+				scrollToComment(commentID);
 			};
 
 			if (post){
@@ -521,5 +545,8 @@
 		.add('/about', 'about')
 		.add(/^\/item\/(\d+)$/i, 'comments', function(path, id){
 			hw.comments.render(id);
+		})
+		.add(/^\/item\/(\d+)\/comment\/(\d+)$/i, 'comments', function(path, id, commentID){
+			hw.comments.render(id, commentID);
 		});
 })(window);
