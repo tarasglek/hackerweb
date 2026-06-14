@@ -89,19 +89,20 @@
 	if (hasLocalStorage) theme = localStorage['hackerweb:options:theme'] || theme;
 
 	var head = d.head || d.getElementsByTagName('head')[0];
+	var assetVersion = '20260614-comment-anchors';
 
 	var link = d.createElement('link');
 	link.rel = 'stylesheet';
-	link.href = 'assets/css/hw-' + theme + '.min.css';
+	link.href = 'assets/css/hw-' + theme + '.min.css?v=' + assetVersion;
 	head.insertBefore(link, head.lastChild);
 
 	var script = d.createElement('script');
-	script.src = 'js/hw-' + theme + '.min.js';
+	script.src = 'js/hw-' + theme + '.min.js?v=' + assetVersion;
 	head.insertBefore(script, head.lastChild);
 })(document, navigator.userAgent);
 
 if ('serviceWorker' in navigator){
-	navigator.serviceWorker.register('service-worker.js').then(function(registration){
+	navigator.serviceWorker.register('service-worker.js?v=20260614-comment-anchors').then(function(registration){
 		console.log('ServiceWorker registration successful with scope: ', registration.scope);
 	}).catch(function(err){
 		console.log('ServiceWorker registration failed: ', err);

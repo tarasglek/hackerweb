@@ -1,12 +1,24 @@
 self.addEventListener('install', function(event){
 	console.log('Install');
+	self.skipWaiting();
 });
 
 self.addEventListener('activate', function(event){
 	console.log('Activate');
+	event.waitUntil(
+		caches.keys().then(function(keys){
+			return Promise.all(keys.map(function(key){
+				if (/^hackerweb-/.test(key) && key != cacheName){
+					return caches.delete(key);
+				}
+			}));
+		}).then(function(){
+			return self.clients.claim();
+		})
+	);
 });
 
-var cacheName = 'hackerweb-v2';
+var cacheName = 'hackerweb-v3';
 var successResponses = /^0|([123]\d\d)|(40[14567])|410$/;
 
 function fetchAndCache(request){
