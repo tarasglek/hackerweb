@@ -250,6 +250,16 @@
 		$commentsHeading = $commentsView.querySelector('header h1'),
 		$commentsSection = $commentsView.querySelector('section');
 
+	var annotateCommentParents = function(comments, storyID, parentID){
+		if (!comments) return;
+		for (var i=0, l=comments.length; i<l; i++){
+			var comment = comments[i];
+			comment.story_id = storyID;
+			if (parentID) comment.parent_id = parentID;
+			annotateCommentParents(comment.comments, storyID, comment.id);
+		}
+	};
+
 	var scrollToComment = function(commentID){
 		if (!commentID) return;
 		var comment = $('comment-' + commentID);
@@ -303,6 +313,7 @@
 					data.domain = domainify(data.url);
 				}
 				data.has_comments = data.comments && !!data.comments.length;
+				annotateCommentParents(data.comments, id);
 				data.i_point = data.points == 1 ? 'point' : 'points';
 				data.i_comment = data.comments_count == 1 ? 'comment' : 'comments';
 				data.has_content = !!data.content;
@@ -336,7 +347,9 @@
 				var links = div.querySelectorAll('a');
 				for (var i=0, l=links.length; i<l; i++){
 					var link = links[i];
-					link.target = '_blank';
+					if (!/^#\//.test(link.getAttribute('href') || '')){
+						link.target = '_blank';
+					}
 				}
 
 				// Highlight the OP
