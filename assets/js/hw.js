@@ -360,7 +360,7 @@
 					var href = link.getAttribute('href') || '';
 					// Keep HN links in comment text inside HackerWeb
 					// (but not our own "view on HN" links in headers/metadata)
-					var hn = !link.closest('header, .metadata') && href.match(/^(?:https?:)?\/\/news\.ycombinator\.com\/item\?id=(\d+)(?:#(\d+))?/i);
+					var hn = !link.closest('header, .metadata') && href.match(/^(?:https?:)?\/\/news\.ycombinator\.com\/item\?id=(\d+)(?:#(?:up_)?(\d+))?/i);
 					if (hn){
 						if (hn[2]){
 							href = '#/item/' + hn[1] + '/comment/' + hn[2];
