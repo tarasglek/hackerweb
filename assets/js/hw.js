@@ -295,6 +295,16 @@
 				var data = clone(_data),
 					tmpl1 = tmpl('post-comments');
 
+				// HN links often point at a comment rather than a story;
+				// show it as a thread rooted at that comment
+				if (data.type == 'comment'){
+					data = {
+						title: data.user ? 'Comment by ' + data.user : 'Comment',
+						url: data.url,
+						time_ago: data.time_ago,
+						comments: [data]
+					};
+				}
 				data.has_post = !!data.title;
 				if (!data.has_post){
 					hw.setTitle();
@@ -347,7 +357,21 @@
 				var links = div.querySelectorAll('a');
 				for (var i=0, l=links.length; i<l; i++){
 					var link = links[i];
-					if (!/^#\//.test(link.getAttribute('href') || '')){
+					var href = link.getAttribute('href') || '';
+					// Keep HN links in comment text inside HackerWeb
+					// (but not our own "view on HN" links in headers/metadata)
+					var hn = !link.closest('header, .metadata') && href.match(/^(?:https?:)?\/\/news\.ycombinator\.com\/item\?id=(\d+)(?:#(\d+))?/i);
+					if (hn){
+						if (hn[2]){
+							href = '#/item/' + hn[1] + '/comment/' + hn[2];
+						} else if (div.querySelector('#comment-' + hn[1])){
+							href = '#/item/' + id + '/comment/' + hn[1];
+						} else {
+							href = '#/item/' + hn[1];
+						}
+						link.setAttribute('href', href);
+					}
+					if (!/^#\//.test(href)){
 						link.target = '_blank';
 					}
 				}
